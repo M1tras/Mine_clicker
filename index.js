@@ -1,4 +1,5 @@
 class StoreItem {
+
     name = 'placeholder: Name';
     price = 0;
     icon = 'placeholder: icon';
@@ -21,7 +22,6 @@ class StoreItem {
         if (rocks < this.price) {
             return 'Not enough rocks!';
         }
-        return 'Can buy';
     }
     itemBuy(rocks) {
         return rocks - this.price;
@@ -47,12 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
     count.addEventListener("click", RockClicked);
     upgradeClicker.addEventListener("click", upgradeClickerClicked);
 
-    let rocks = 0;
+    let rocks = Number(localStorage.getItem("rock")) || 0;
     let multiplier = 1;
     let multiplierCost = 25;
 
+    // Show stored value on load
+    displayRocksAmt();
+
     function RockClicked() {
         rocks += multiplier;
+        localStorage.setItem("rock", rocks);
         displayRocksAmt();
     }
 
@@ -64,9 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
     function upgradeClickerClicked() {
         if (rocks >= multiplierCost) {
             rocks -= multiplierCost;
-            multiplier= 2;
+            multiplier += 2;
             multiplierCost = Math.floor(multiplierCost * 1.3);
             displayUpgradeCost.innerHTML = "Upgrade costs " + multiplierCost + " rocks";
+            localStorage.setItem("rock", rocks);
             displayRocksAmt();
         } else {
             alert("Not enough rocks");
