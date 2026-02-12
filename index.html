@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Mine clicker</title>
-    <link rel="icon" type="image/png" href="/Textures/Backgrounds/boulder.png">
+    <title>Mine Clicker</title>
+    <link rel="icon" type="image/png" href="/Textures/boulder.png">
 </head>
 <body>
+    <!-- Header / Navbar -->
     <header>
         <nav id="navbar">
             <ul>
@@ -17,26 +18,30 @@
             </ul>
         </nav>
     </header>
+
+    <!-- Main Clicker -->
     <section id="main-page">
         <div class="sign">
             <br><br><br>
             <h1>MINE CLICKER!</h1>
             <h2 id="counting">0</h2>
         </div>
-        <div>
+        <div id="rock">
             <button id="button">
-                <img src="./Textures/Backgrounds/boulder.png">
+                <img src="./Textures/Backgrounds/boulder.png" alt="Rock">
             </button>
         </div>
-        <div>
-            
-        </div>
     </section>
+
     <section>
         <div>
-            
+            <h2>Shop</h2>
+            <div id="displayrocks">You have 0 rocks</div>
+            <div id="displayUpgradeCost">Upgrade costs 25 rocks</div>
+            <button id="upgClicker">Upgrade Clicker</button>
         </div>
     </section>
+
     <script src="index.js"></script>
 </body>
 </html>
