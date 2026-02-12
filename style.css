@@ -75,13 +75,19 @@ body {
 
 /* Store Start */
 .separator {
-    background: url('./Textures/Backgrounds/wood_background.png') center center/cover;
+    background: url('./Textures/Backgrounds/wood_background.png') center;
     height: 60px;
 } 
-#background-store {
+#store {
     padding-top: 1px;
     background: url('./Textures/Backgrounds/wood2_background.jpg') center;
     height: 500px;
     width: 100%;
-} 
+    color: white;
+}
+#store h2 {
+    text-align: center;
+    text-shadow: 3px 4px 0px black;
+    font-size: 40px;
+}
 /* Store End */
