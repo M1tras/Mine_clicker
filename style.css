@@ -87,7 +87,16 @@ body {
 }
 #store h2 {
     text-align: center;
-    text-shadow: 3px 4px 0px black;
-    font-size: 40px;
+    text-shadow: 6px 4px 0px black;
+    font-size: 60px;
+}
+#store .store-items {
+    margin: auto;
+    max-width: 1120px;
+    padding: 50px;
+    padding-top: 75px;
+    background: url('./Textures/Backgrounds/wood_background.png');
+    border: 10px solid rgb(37, 13, 1);
+    border-radius: 8px;
 }
 /* Store End */

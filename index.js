@@ -1,12 +1,10 @@
 class StoreItem {
     name = 'placeholder: Name';
     price = 0;
-    icon = 'placeholder: icon';
 
-    constructor(name, price, icon) {
+    constructor(name, price) {
         this.name = name;
         this.price = price;
-        this.icon = icon;
     }
 
     getName() {
@@ -15,10 +13,6 @@ class StoreItem {
 
     getPrice() {
         return this.price;
-    }
-
-    getIcon() {
-        return this.icon;
     }
 
     itemBuyCheck(rocks) {
@@ -32,12 +26,15 @@ class StoreItem {
     }
 }
 
-/* Icons Start */
-const slave_icon = 'placeholder';
-/* Icons End */
+/* Backgrounds */
+const background_1 = "./Textures/Backgrounds/dirt_background.png";
+const background_2 = "./Textures/Backgrounds/stone_background.png";
+const background_3 = "./Textures/Backgrounds/rock_background.png";
+const background_4 = "./Textures/Backgrounds/lava_background.png";
+/* Backgrounds */
 
 /* Store items Start */
-const slave = new StoreItem("slave", 100, slave_icon);
+const slave = new StoreItem("pickaxe", 100);
 /* Store items End */
 
 document.addEventListener("DOMContentLoaded", () => {
