@@ -1,10 +1,12 @@
 class StoreItem {
     name = 'placeholder: Name';
     price = 0;
+    priceMultiplier = 0;
 
-    constructor(name, price) {
+    constructor(name, price, priceMultiplier) {
         this.name = name;
         this.price = price;
+        this.priceMultiplier = priceMultiplier;
     }
 
     getName() {
@@ -12,7 +14,11 @@ class StoreItem {
     }
 
     getPrice() {
-        return this.price;
+        return this.price.toFixed(0);
+    }
+
+    getPriceMultiplier() {
+        return this.priceMultiplier;
     }
 
     itemBuyCheck(rocks) {
@@ -24,6 +30,11 @@ class StoreItem {
     itemBuy(rocks) {
         return rocks - this.price;
     }
+
+    addMultiplier() {
+        this.price *= this.priceMultiplier;
+        return this.price;
+    }
 }
 
 /* Backgrounds */
@@ -33,11 +44,17 @@ const background_3 = "./Textures/Backgrounds/rock_background.png";
 const background_4 = "./Textures/Backgrounds/lava_background.png";
 /* Backgrounds */
 
-/* Store items Start */
-const slave = new StoreItem("pickaxe", 100);
-/* Store items End */
-
 document.addEventListener("DOMContentLoaded", () => {
+
+    // Store items Start
+    const pickaxe_item = new StoreItem("pickaxe", 100, 1.2);
+    const minion_item = new StoreItem("minion", 250, 1.2);
+    const minionHut_item = new StoreItem("minion hut", 1000, 1.5);
+    const metalDetector_item = new StoreItem("metal detector", 1500, 1.2);
+    const machinery_item = new StoreItem("machinery", 2000, 1.8);
+    const drill_item = new StoreItem("drill", 10000, 2);
+    // Store items End 
+
     // Rock clicker system
     let count = document.getElementById("rock");
     let displayrocks = document.getElementById("displayrocks");
