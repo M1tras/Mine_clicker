@@ -39,11 +39,14 @@ class StoreItem {
 
 // Backgrounds Start
 const backgrounds = {
-    background_1: "./Textures/Backgrounds/dirt_background.png",
-    background_2: "./Textures/Backgrounds/stone_background.png",
-    background_3: "./Textures/Backgrounds/rock_background.png",
-    background_4: "./Textures/Backgrounds/lava_background.png"
+    1: "./Textures/Backgrounds/dirt_background.png",
+    2: "./Textures/Backgrounds/stone_background.png",
+    3: "./Textures/Backgrounds/rock_background.png",
+    4: "./Textures/Backgrounds/lava_background.png"
 };
+
+let backgroundNumber = 1;
+let currentBackground = backgrounds[backgroundNumber];
 // Backgrounds End
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -54,11 +57,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const minionHut_item = new StoreItem("minion hut", 1000, 1.5);
     const metalDetector_item = new StoreItem("metal detector", 1500, 1.2);
     const machinery_item = new StoreItem("machinery", 2000, 1.8);
-    const drill_item = new StoreItem("drill", 10000, 2);
+    const drill_item = new StoreItem("drill", 10000, 100);
 
-
+    // Values Start
     let itemsOwned = {
-        pickaxeOwned: 4,
+        pickaxeOwned: 0,
         minionOwned: 0,
         minionHutOwned: 0,
         metalDetectorOwned: 0,
@@ -66,18 +69,47 @@ document.addEventListener("DOMContentLoaded", () => {
         drillOwned: 0
     };
 
+    let oreValues = {
+        oreRockValue: 1,
+        oreCoalValue: 2,
+        oreGoldValue: 10,
+        oreMagmaValue: 100
+    }
+
+    let oreActive = {
+        oreCoalActive: false,
+        oreGoldActive: false,
+        oreMagmaActive: false
+    }
+    //Values End
+
     // Pickaxe Upgrade Start
     pickaxeUpgrade = () => {
         itemsOwned.pickaxeOwned +=1;
-        pickaxe_item.price * 1.2;
+        pickaxe_item.price * pickaxe_item.priceMultiplier;
     }
     // Pickaxe Upgrade End
 
     // Drill Upgrade Start
+    drillUpgrade = () => {
+        backgroundNumber += 1;
+
+        drill_item.price * drill_item.priceMultiplier
+
+        if (backgroundNumber === 2) {
+            oreActive.oreCoalActive = true;
+        }
+        else if (backgroundNumber === 3) {
+            oreActive.oreGoldActive = true;
+        }
+        else if (backgroundNumber === 4) {
+            oreActive.oreMagmaActive = true;
+        }
+    }
     // Drill Upgrade End
 
     // Store items End 
-
+    
     // Rock clicker system
     let count = document.getElementById("rock");
     let displayrocks = document.getElementById("displayrocks");
@@ -103,4 +135,3 @@ document.addEventListener("DOMContentLoaded", () => {
         if (counting) counting.innerText = rocks;
     }
 });
-
