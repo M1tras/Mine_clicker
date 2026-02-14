@@ -104,7 +104,6 @@ body {
 #store .store-items {
     margin: auto;
     max-width: 1120px;
-    padding: 20px;
     background: url('./Textures/Backgrounds/wood_background.png');
     border: 10px solid rgb(37, 13, 1);
     border-radius: 8px;
@@ -116,6 +115,11 @@ body {
     border: 5px solid black;
     width: 200px;
     height: 50px;
+}
+#store .item-pickaxe img {
+    width: 100px;
+    height: 100px;
+    padding-bottom: 2px;
 }
 /* Items In Store Start*/
 /* Items In Store End */
