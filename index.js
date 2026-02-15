@@ -2,39 +2,26 @@ class StoreItem {
     name = 'placeholder: Name';
     price = 0;
     priceMultiplier = 0;
+    perClick = 0;
+    icon = '';
 
-    constructor(name, price, priceMultiplier) {
+    constructor(name, price, priceMultiplier, perClick = 0, icon = '') {
         this.name = name;
         this.price = price;
         this.priceMultiplier = priceMultiplier;
+        this.perClick = perClick;
+        this.icon = icon;
     }
 
-    getName() {
-        return this.name;
-    }
+    getName() { return this.name; }
+    getPrice() { return this.price.toFixed(0); }
+    getPriceMultiplier() { return this.priceMultiplier; }
+    getPerClick() { return this.perClick; }
+    getIcon() { return this.icon; }
 
-    getPrice() {
-        return this.price.toFixed(0);
-    }
-
-    getPriceMultiplier() {
-        return this.priceMultiplier;
-    }
-
-    itemBuyCheck(rocks) {
-        if (rocks < this.price) {
-            return 'Not enough rocks!';
-        }
-    }
-
-    itemBuy(rocks) {
-        return rocks - this.price;
-    }
-
-    addMultiplier() {
-        this.price *= this.priceMultiplier;
-        return this.price;
-    }
+    itemBuyCheck(rocks) { return rocks >= this.price; }
+    itemBuy(rocks) { return rocks - this.price; }
+    addMultiplier() { this.price *= this.priceMultiplier; return this.price; }
 }
 
 // Backgrounds Start
@@ -51,87 +38,140 @@ let currentBackground = backgrounds[backgroundNumber];
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Store items Start
-    const pickaxe_item = new StoreItem("pickaxe", 100, 1.2);
-    const minion_item = new StoreItem("minion", 250, 1.2);
-    const minionHut_item = new StoreItem("minion hut", 1000, 1.5);
-    const metalDetector_item = new StoreItem("metal detector", 1500, 1.2);
-    const machinery_item = new StoreItem("machinery", 2000, 1.8);
-    const drill_item = new StoreItem("drill", 10000, 100);
+    // Store items
+    // multiple store items (name, price, multiplier, perClick, icon)
+    const storeItems = [
+        new StoreItem("pickaxe", 100, 1.2, 1, "./Textures/Icons/pickaxe.png"),
+        new StoreItem("miner", 500, 1.25, 5, "./Textures/Icons/worker.png"),
+        new StoreItem("drill", 2000, 1.5, 20, "./Textures/Icons/drill.png"),
+    ];
 
-    // Values Start
-    let itemsOwned = {
-        pickaxeOwned: 0,
-        minionOwned: 0,
-        minionHutOwned: 0,
-        metalDetectorOwned: 0,
-        machineryOwned: 0,
-        drillOwned: 0
-    };
+    let selectedItemIndex = 0;
 
-    let oreValues = {
-        oreRockValue: 1,
-        oreCoalValue: 2,
-        oreGoldValue: 10,
-        oreMagmaValue: 100
-    }
+    let itemsOwned = {};
+    storeItems.forEach(i => itemsOwned[i.name] = 0);
 
-    let oreActive = {
-        oreCoalActive: false,
-        oreGoldActive: false,
-        oreMagmaActive: false
-    }
-    //Values End
+  
+    // Rock clicker
 
-    // Pickaxe Upgrade Start
-    pickaxeUpgrade = () => {
-        itemsOwned.pickaxeOwned +=1;
-        pickaxe_item.price * pickaxe_item.priceMultiplier;
-    }
-    // Pickaxe Upgrade End
-
-    // Drill Upgrade Start
-    drillUpgrade = () => {
-        backgroundNumber += 1;
-
-        drill_item.price * drill_item.priceMultiplier
-
-        if (backgroundNumber === 2) {
-            oreActive.oreCoalActive = true;
-        }
-        else if (backgroundNumber === 3) {
-            oreActive.oreGoldActive = true;
-        }
-        else if (backgroundNumber === 4) {
-            oreActive.oreMagmaActive = true;
-        }
-    }
-    // Drill Upgrade End
-
-    // Store items End 
-    
-    // Rock clicker system
     let count = document.getElementById("rock");
-    let displayrocks = document.getElementById("displayrocks");
     let counting = document.getElementById("counting");
     let rocks = Number(localStorage.getItem("rock")) || 0;
 
     displayRocksAmt();
-    if (count) count.addEventListener("click", RockClicked);
+
+    if (count) {
+        count.addEventListener("click", RockClicked);
+    }
 
     function RockClicked() {
-        if (itemsOwned.pickaxeOwned > 0) {
-            rocks += (1 + itemsOwned.pickaxeOwned);
-        }
-        else {
-            rocks ++;
-        }
-        localStorage.setItem("rock", rocks);
+        let perClickBonus = 0;
+        storeItems.forEach(item => {
+            const count = itemsOwned[item.name] || 0;
+            perClickBonus += count * item.perClick;
+        });
+
+        rocks += 1 + perClickBonus;
+
+        saveGame();
         displayRocksAmt();
     }
 
     function displayRocksAmt() {
-        if (displayrocks) displayrocks.innerHTML = "You have " + rocks + " rocks";
-        if (counting) counting.innerText = rocks;
+        if (counting) counting.innerText = Math.floor(rocks);
     }
+
+ 
+    // STORE - render grid and handle Buy action only
+    const storeGridEl = document.querySelector(".store-grid");
+
+    function renderStoreGrid() {
+        if (!storeGridEl) return;
+        storeGridEl.innerHTML = storeItems.map((item, idx) => `
+            <div class="store-card" data-index="${idx}">
+                <img class="store-icon" src="${item.getIcon() || './Textures/Icons/pickaxe.png'}" alt="${item.getName()}">
+                <div class="store-info">
+                    <h3 class="store-item-name">${item.getName()}</h3>
+                    <p class="store-item-owned">Owned: ${itemsOwned[item.name] || 0}</p>
+                    <button class="card-buy" data-index="${idx}">Buy (${item.getPrice()})</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // delegated click handler — only handle Buy clicks (no selection)
+    if (storeGridEl) {
+        storeGridEl.addEventListener('click', (e) => {
+            const buyBtn = e.target.closest('.card-buy');
+            if (!buyBtn) return; // ignore non-buy clicks
+
+            const idx = Number(buyBtn.dataset.index);
+            const item = storeItems[idx];
+            if (!item.itemBuyCheck(rocks)) { alert('Not enough rocks!'); return; }
+
+            rocks = item.itemBuy(rocks);
+            itemsOwned[item.name] = (itemsOwned[item.name] || 0) + 1;
+            item.addMultiplier();
+
+            saveGame();
+            displayRocksAmt();
+            renderStoreGrid();
+        });
+    }
+
+   
+    // SAVE/LOAD
+
+
+    function saveGame() {
+        localStorage.setItem("rock", rocks);
+        localStorage.setItem("itemsOwned", JSON.stringify(itemsOwned));
+        const prices = {};
+        storeItems.forEach(i => prices[i.name] = i.price);
+        localStorage.setItem("itemPrices", JSON.stringify(prices));
+    }
+
+    function loadGame() {
+        const savedItems = JSON.parse(localStorage.getItem("itemsOwned"));
+        const savedPrices = JSON.parse(localStorage.getItem("itemPrices"));
+
+        if (savedItems) {
+            Object.keys(itemsOwned).forEach(k => {
+                if (savedItems[k] !== undefined) itemsOwned[k] = savedItems[k];
+            });
+        }
+
+        if (savedPrices) {
+            storeItems.forEach(i => {
+                if (savedPrices[i.name] !== undefined) i.price = savedPrices[i.name];
+            });
+        }
+
+        try { localStorage.removeItem("pickaxePrice"); } catch (e) { /* ignore */ }
+    }
+
+    // SHOP UI UPDATE
+
+    function updateShopUI() {
+        const item = storeItems[selectedItemIndex];
+
+        // update single-card UI
+        const storeItemNameEl = document.querySelector('.store-item-name');
+        const storeItemOwnedEl = document.querySelector('.store-item-owned');
+        const storeBuyBtn = document.querySelector('.store-buy');
+        const storeIconEl = document.querySelector('.store-icon');
+
+        if (storeItemNameEl) storeItemNameEl.innerText = item.getName();
+        if (storeItemOwnedEl) storeItemOwnedEl.innerText = 'Owned: ' + (itemsOwned[item.name] || 0);
+        if (storeBuyBtn) storeBuyBtn.innerText = 'Buy (' + item.getPrice() + ')';
+        if (storeIconEl) storeIconEl.src = item.getIcon() || './Textures/Icons/pickaxe.png';
+
+        // re-render grid
+        if (typeof renderStoreGrid === 'function') renderStoreGrid();
+    }
+
+    // INIT
+
+    loadGame();
+    updateShopUI();
 });
