@@ -28,13 +28,32 @@ body {
 
 /*Button Start*/
 #main-page {
+    position: relative;               /* allow absolute overlay for cross-fade */
+    overflow: hidden;                 /* keep overlay contained */
     text-align: center;
     padding-top: 20px;
-    background: url('Textures/Backgrounds/rock_background.png') no-repeat center center/cover;
+    background: url('Textures/Backgrounds/dirt_background.png') no-repeat center center/cover;
     height: 700px;
     color: white;
     text-shadow: 3px 4px 0px black;
 }
+
+/* ensure main content sits above the fading overlay */
+#main-page .sign,
+#main-page #rock { position: relative; z-index: 1; }
+
+/* background fader used to cross-fade into the next background image */
+.bg-fader {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 600ms ease; 
+    pointer-events: none;
+    z-index: 0;
+} 
 #main-page .sign {
     background: url('Textures/Assets/hanging_sign.png') no-repeat center;
     width: 100%;
