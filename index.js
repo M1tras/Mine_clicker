@@ -43,13 +43,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const storeItems = [
         new StoreItem("pickaxe", 100, 1.2, 1, "./Textures/Icons/pickaxe.png"),
         // miner gives passive income only
-        new StoreItem("miner", 500, 1.25, 0, "./Textures/Icons/worker.png"),
+        new StoreItem("miner", 500, 1.1, 0, "./Textures/Icons/worker.png"),
         // drill grants a click multiplier instead of a flat per-click bonus
-        new StoreItem("drill", 2000, 1.5, 0, "./Textures/Icons/drill.png"),
+        new StoreItem("drill", 2000, 2, 0, "./Textures/Icons/drill.png"),
     ];
 
-    // additive click multiplier per drill owned (25% per drill). Adjust to balance.
-    const DRILL_CLICK_MULT = 0.25;
+    // additive click multiplier per drill owned
+    const DRILL_MULT = 0.5;
 
     let selectedItemIndex = 0;
 
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     function getGlobalMultiplier() {
         const drillCount = itemsOwned['drill'] || 0;
-        return 1 + drillCount * DRILL_CLICK_MULT;
+        return 1 + drillCount * DRILL_MULT;
     }
 
     function RockClicked() {
@@ -100,16 +100,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
  
-    // STORE - render grid and handle Buy action only
+    // STORE - render grid and handle Buy action
     const storeGridEl = document.querySelector(".store-grid");
 
     function renderStoreGrid() {
         if (!storeGridEl) return;
         storeGridEl.innerHTML = storeItems.map((item, idx) => {
             const owned = itemsOwned[item.name] || 0;
-            const productionLine = item.name === 'miner' ? `<p class="store-item-pps">Produces: ${owned} rock${owned === 1 ? '' : 's'}/sec</p>` : '';
+            const productionLine = item.name === 'miner' ? `<p class="store-item-pps">Produces: ${owned * 10} rocks/sec</p>` : '';
             const drillLine = item.name === 'drill' && owned > 0
-                ? `<p class="store-item-pps">Each drill: +${(DRILL_CLICK_MULT * 100).toFixed(0)}% to ALL rock income — Total ×${(1 + owned * DRILL_CLICK_MULT).toFixed(2)}</p>`
+                ? `<p class="store-item-pps">Each drill: +${(DRILL_MULT * 100).toFixed(0)}% to ALL rock income — Total ×${(1 + owned * DRILL_MULT).toFixed(2)}</p>`
                 : ''; 
 
             return `
@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
     applyBackground(false);
 
     // Passive income: miners produce rocks every second
-    const minerProductionRate = 1;
+    const minerProductionRate = 10;
     function rocksPerSecond() { return (itemsOwned['miner'] || 0) * minerProductionRate; }
 
     setInterval(() => {
