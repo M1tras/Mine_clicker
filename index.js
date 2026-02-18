@@ -13,15 +13,31 @@ class StoreItem {
         this.icon = icon;
     }
 
-    getName() { return this.name; }
-    getPrice() { return this.price.toFixed(0); }
-    getPriceMultiplier() { return this.priceMultiplier; }
-    getPerClick() { return this.perClick; }
-    getIcon() { return this.icon; }
+    getName() {
+        return this.name;
+    }
+    getPrice() {
+        return this.price.toFixed(0);
+    }
+    getPriceMultiplier() {
+        return this.priceMultiplier;
+    }
+    getPerClick() {
+        return this.perClick;
+    }
+    getIcon() {
+        return this.icon;
+    }
 
-    itemBuyCheck(rocks) { return rocks >= this.price; }
-    itemBuy(rocks) { return rocks - this.price; }
-    addMultiplier() { this.price *= this.priceMultiplier; return this.price; }
+    itemBuyCheck(rocks) {
+        return rocks >= this.price;
+    }
+    itemBuy(rocks) {
+        return rocks - this.price;
+    }
+    addMultiplier() {
+        this.price *= this.priceMultiplier; return this.price;
+    }
 }
 
 // Backgrounds Start

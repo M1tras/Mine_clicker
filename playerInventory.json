@@ -1,0 +1,17 @@
+{
+    "playerInventory": {
+        "oresInInventory": {
+            "oreStone": 0,
+            "oreCoal": 0,
+            "oreIron": 0,
+            "oreLithium": 0,
+            "oreGold": 0,
+            "oreObsidian": 0
+        },
+        "buffsInInventory": {
+            "hastePotion": 0,
+            "minerFood": 0,
+            "luckyPickaxeCoating": 0
+        }
+    }
+}

@@ -39,10 +39,6 @@ body {
     text-shadow: 3px 4px 0px black;
 }
 
-/* ensure main content sits above the fading overlay */
-#main-page .sign,
-#main-page #rock { position: relative; z-index: 1; }
-
 /* background fader used to cross-fade into the next background image */
 .bg-fader {
     position: absolute;
@@ -162,10 +158,18 @@ body {
     width: 100px;
     height: 100px;
 }
-.store-info { color: white; text-align: left; }
-.store-item-name { margin: 0 0 8px 0; }
-.store-item-owned { margin: 0 0 12px 0; }
-.store-buy { border-radius: 6px; padding: 8px 12px; }
+.store-info {
+    color: white; text-align: left;
+}
+.store-item-name {
+    margin: 0 0 8px 0;
+}
+.store-item-owned {
+    margin: 0 0 12px 0; 
+}
+.store-buy {
+    border-radius: 6px; padding: 8px 12px;
+}
 
 /* Items In Store Start*/
 /* Items In Store End */
