@@ -4,8 +4,8 @@
         "oresInInventory": {
             "oreStone": 0,
             "oreCoal": 0,
-            "oreIron": 0,
-            "oreLithium": 0,
+            "oreIron": 6,
+            "oreLithium": 2,
             "oreGold": 0,
             "oreObsidian": 0
         },

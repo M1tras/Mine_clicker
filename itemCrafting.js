@@ -14,9 +14,33 @@ class ItemRecipe {
     getOres() {
         console.log(this.oresRequired);
     }
+
+    //Checks if player has enough of crafting materials. Returns true if the player does and false if the player doesn't
+    checkForOres() {
+        const countOres = Object.keys(this.oresRequired);
+        let checkAnswer = false;
+
+        for (let i = 0; i < countOres.length; i++) {
+            if (countOres[i] in playerInventory.playerInventory.oresInInventory) {
+                if (this.oresRequired[countOres[i]] >= playerInventory.playerInventory.oresInInventory[countOres[i]]) {
+                    checkAnswer = true;
+                }
+                else {
+                    checkAnswer = false;
+                    break
+                }
+            }
+            else {
+                console.log(`Error: Ore(${countOres[i]}) does not exist in game`);
+            }
+        }
+        return checkAnswer;
+    }
 }
 
-const testItem = new ItemRecipe('yes', {iron: 5}, 0);
-testItem.checkForOres();
+/*
+const testItem = new ItemRecipe('yes', {"oreIron": 2, "oreLithium": 6}, 0);
+console.log(testItem.checkForOres());
+*/
 
 export default ItemRecipe;
