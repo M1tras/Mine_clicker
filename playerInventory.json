@@ -13,6 +13,13 @@
             "hastePotion": 0,
             "minerFood": 0,
             "luckyPickaxeCoating": 0
+        },
+        "storeItemsInInventory": {
+            "itemPickaxe": 0,
+            "itemBlackMan": 0,
+            "itemBlackManHut": 0,
+            "itemMachinery": 0,
+            "ItemDrill": 0
         }
     }
 }
