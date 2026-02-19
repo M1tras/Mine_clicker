@@ -12,58 +12,50 @@ let backgroundNumber = 1;
 let currentBackground = backgrounds[backgroundNumber];
 // Backgrounds End
 
+function resetGameHandler() {
+    if (confirm('Are you sure you want to reset your progress? This cannot be undone.')) {
+        localStorage.clear();
+        location.reload();
+    }
+}
+
+window.resetGame = resetGameHandler;
+
 document.addEventListener("DOMContentLoaded", () => {
 
     // Store items
-    // multiple store items (name, price, multiplier, perClick, icon)
     const storeItems = [
-        new StoreItem("pickaxe", 100, 1.2, 1, "./Textures/Icons/pickaxe.png"),
-        // miner gives passive income only
+        new StoreItem("pickaxe", 25, 1.1, 1, "./Textures/Icons/pickaxe.png"),
         new StoreItem("miner", 500, 1.1, 0, "./Textures/Icons/worker.png"),
-        // drill grants a click multiplier instead of a flat per-click bonus
-        new StoreItem("drill", 2000, 2, 0, "./Textures/Icons/drill.png"),
+        new StoreItem("drill", 10000, 2, 0, "./Textures/Icons/drill.png"),
+        new StoreItem("miner hut", 2000, 3, 0, "./Textures/Icons/hut.png")
     ];
 
-    // additive click multiplier per drill owned
     const DRILL_MULT = 0.5;
-
     let selectedItemIndex = 0;
-
     let itemsOwned = {};
     storeItems.forEach(i => itemsOwned[i.name] = 0);
 
-  
     // Rock clicker
-
     let count = document.getElementById("rock");
     let counting = document.getElementById("counting");
     let rocks = Number(localStorage.getItem("rock")) || 0;
 
     displayRocksAmt();
+    if (count) count.addEventListener("click", RockClicked);
 
-    if (count) {
-        count.addEventListener("click", RockClicked);
-    }
-
-    /**
-     * Global multiplier from multiplier-type items (drill currently provides this).
-     * Future items can add to this by setting a `globalMultiplier` property.
-     */
     function getGlobalMultiplier() {
         const drillCount = itemsOwned['drill'] || 0;
         return 1 + drillCount * DRILL_MULT;
     }
 
     function RockClicked() {
-        // flat per-click bonus from items (exclude miners & multiplier-only items)
         let perClickBonus = 0;
         storeItems.forEach(item => {
-            if (item.name === 'miner' || item.name === 'drill') return; // miners are passive; drills are multiplier-only
             const count = itemsOwned[item.name] || 0;
-            perClickBonus += count * item.perClick;
+            perClickBonus += count * item.getPerClick();
         });
 
-        // apply global multiplier (drill affects ALL rock income now)
         const gained = (1 + perClickBonus) * getGlobalMultiplier();
         rocks += gained;
 
@@ -75,34 +67,69 @@ document.addEventListener("DOMContentLoaded", () => {
         if (counting) counting.innerText = Math.floor(rocks);
     }
 
- 
-    // STORE - render grid and handle Buy action
+    // grid start //
     const storeGridEl = document.querySelector(".store-grid");
 
     function renderStoreGrid() {
         if (!storeGridEl) return;
-        storeGridEl.innerHTML = storeItems.map((item, idx) => {
-            const owned = itemsOwned[item.name] || 0;
-            const productionLine = item.name === 'miner' ? `<p class="store-item-pps">Produces: ${owned * 10} rocks/sec</p>` : '';
-            const drillLine = item.name === 'drill' && owned > 0
-                ? `<p class="store-item-pps">Each drill: +${(DRILL_MULT * 100).toFixed(0)}% to ALL rock income — Total ×${(1 + owned * DRILL_MULT).toFixed(2)}</p>`
-                : ''; 
-
-            return `
-            <div class="store-card" data-index="${idx}">
-                <img class="store-icon" src="${item.getIcon() || './Textures/Icons/pickaxe.png'}" alt="${item.getName()}">
-                <div class="store-info">
-                    <h3 class="store-item-name">${item.getName()}</h3>
-                    <p class="store-item-owned">Owned: ${owned}</p>
-                    ${productionLine}${drillLine}
-                    <button class="card-buy" data-index="${idx}">Buy (${item.getPrice()})</button>
-                </div>
-            </div>
-        `;
-        }).join('');
+        storeGridEl.innerHTML = "";
+        
+        storeItems.forEach((item, index) => {
+            const cardFragment = createStoreCard(item, index);
+            storeGridEl.appendChild(cardFragment);
+        });
     }
 
-    // delegated click handler — handle Buy clicks via a single helper
+    function createStoreCard(item, index) {
+        const template = document.getElementById('store-card-template');
+        const card = template.content.cloneNode(true);
+        const div = card.querySelector('.store-card');
+        
+        const ownedCount = itemsOwned[item.name] || 0;
+        
+        div.dataset.index = index;
+        card.querySelector('.store-icon').src = item.getIcon();
+        card.querySelector('.store-item-name').textContent = item.getName();
+        card.querySelector('.store-item-owned').textContent = `Owned: ${ownedCount}`;
+        card.querySelector('.card-buy').dataset.index = index;
+        card.querySelector('.card-buy').textContent = `Buy (${item.getPrice()})`;
+        
+        const clickbonus = card.querySelector(".click-bonus");
+        const productionInfo = card.querySelector('.production-info');
+        const drillInfo = card.querySelector('.drill-info');
+        const minerHutInfo = card.querySelector('.miner-hut-info');
+
+        if (item.getName() === "pickaxe") {
+            clickbonus.textContent = `+${item.getPerClick()} per click`;
+        } else {
+            clickbonus.style.display = 'none';
+        }
+
+        if (item.getName() === "miner") {
+            productionInfo.textContent = `Produces: ${ownedCount * 10} rocks/sec`;
+        } else {
+            productionInfo.style.display = 'none';
+        }
+        
+        if (item.getName() === "drill") {
+            const percentBonus = (DRILL_MULT * 100).toFixed(0);
+            const totalMultiplier = (1 + ownedCount * DRILL_MULT).toFixed(2);
+            drillInfo.textContent = `Each drill: +${percentBonus}% to rocks. Current: ×${totalMultiplier}`;
+        } else {
+            drillInfo.style.display = 'none';
+        }
+        
+        if (item.getName() === "miner hut") {
+            const MAX_MINERS = 10 + (ownedCount * 10);
+            minerHutInfo.textContent = `Allows up to ${MAX_MINERS} miners`;
+        } else {
+            minerHutInfo.style.display = 'none';
+        }
+        
+        return card;
+    }
+
+    //  buy stuff from store
     if (storeGridEl) {
         storeGridEl.addEventListener('click', e => {
             const buyBtn = e.target.closest('.card-buy');
@@ -111,17 +138,28 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    /** Centralized purchase logic used by grid (and future UI controls). */
     function purchaseItem(idx) {
         const item = storeItems[idx];
         if (!item) return;
-        if (!item.itemBuyCheck(rocks)) { alert('Not enough rocks!'); return; }
+
+        if (!item.itemBuyCheck(rocks)) {
+            alert('Not enough rocks!');
+            return;
+        }
+
+        if (item.getName() === 'miner') {
+            const maxMiners = 10 + (itemsOwned['miner hut'] || 0) * 10;
+            if (itemsOwned['miner'] >= maxMiners) {
+                alert(`You can only own up to ${maxMiners} miners! Buy miner huts to increase the limit.`);
+                return;
+            }
+        }
 
         rocks = item.itemBuy(rocks);
         itemsOwned[item.name] = (itemsOwned[item.name] || 0) + 1;
         item.addMultiplier();
 
-        if (item.name === 'drill') advanceBackground();
+        if (item.getName() === 'drill') advanceBackground();
 
         saveGame();
         displayRocksAmt();
@@ -129,7 +167,8 @@ document.addEventListener("DOMContentLoaded", () => {
         updateShopUI();
     }
 
-    /** Advance background by one step (clamped). */
+// grid end //
+
     function advanceBackground() {
         const maxBg = Math.max(...Object.keys(backgrounds).map(n => Number(n)));
         if (backgroundNumber >= maxBg) return;
@@ -138,7 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
         applyBackground(true);
     }
 
-    // SAVE/LOAD — concise and robust
     function saveGame() {
         localStorage.setItem('rock', String(rocks));
         localStorage.setItem('itemsOwned', JSON.stringify(itemsOwned));
@@ -167,16 +205,15 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
             console.warn('Failed to load saved game — starting fresh', err);
         } finally {
-            try { localStorage.removeItem('pickaxePrice'); } catch (e) { /* ignore */ }
+            try { localStorage.removeItem('pickaxePrice'); } catch (e) {}
         }
     }
 
-    // SHOP UI UPDATE — smaller, clearer
     function updateShopUI() {
         const item = storeItems[selectedItemIndex];
         const owned = itemsOwned[item.name] || 0;
-        const prod = item.name === 'miner' ? ` — Produces: ${owned} rock${owned === 1 ? '' : 's'}/sec` : '';
-        const drillInfo = item.name === 'drill' ? ` — All income ×${(1 + owned * DRILL_MULT).toFixed(2)}` : '';
+        const prod = item.getName() === 'miner' ? ` — Produces: ${owned} rock${owned === 1 ? '' : 's'}/sec` : '';
+        const drillInfo = item.getName() === 'drill' ? ` — All income ×${(1 + owned * DRILL_MULT).toFixed(2)}` : '';
 
         const storeItemNameEl = document.querySelector('.store-item-name');
         const storeItemOwnedEl = document.querySelector('.store-item-owned');
@@ -191,7 +228,6 @@ document.addEventListener("DOMContentLoaded", () => {
         renderStoreGrid();
     }
 
-    /** Apply the current background image (cross-fade). Cleaner listener using `once`. */
     function applyBackground(doFade = true) {
         const mainEl = document.getElementById('main-page');
         if (!mainEl) return;
@@ -218,13 +254,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }, { once: true });
     }
 
-    // INIT
-
     loadGame();
     updateShopUI();
     applyBackground(false);
 
-    // Passive income: miners produce rocks every second
     const minerProductionRate = 10;
     function rocksPerSecond() { return (itemsOwned['miner'] || 0) * minerProductionRate; }
 
