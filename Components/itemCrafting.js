@@ -1,4 +1,4 @@
-import playerInventory from './playerInventory.json' with { type: "json"};
+import playerInventory from '../Data/playerInventory.json' with { type: "json"};
 
 class ItemRecipe {
     //Item price is optional
@@ -39,10 +39,5 @@ class ItemRecipe {
 
     
 }
-
-/*
-const testItem = new ItemRecipe('yes', {"oreIron": 2, "oreLithium": 6}, 0);
-console.log(testItem.checkForOres());
-*/
 
 export default ItemRecipe;

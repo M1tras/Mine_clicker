@@ -36,7 +36,8 @@ class StoreItem {
         return rocks - this.price;
     }
     addMultiplier() {
-        this.price *= this.priceMultiplier; return this.price;
+        this.price *= this.priceMultiplier;
+        return this.price;
     }
 }
 

@@ -1,5 +1,36 @@
-import StoreItem from './storeItem.js';
+import playerInventory from './Data/playerInventory.json' with { type: "json"};
+import oresInGame from './Data/ores.json' with { type: "json" };
+import StoreItem from './Components/storeItem.js';
 
+//Spins the ore chance and adds the chosen ore to the players inventory
+function spinForOre() {
+    let spin = Math.floor(Math.random() * 1000000);
+
+    if (spin >= oresInGame.oresInGame.oreDropChance["oreDiddyum"] && oresInGame.oresInGame.oreDropActive["oreDiddyum"] === true) {
+        return playerInventory.playerInventory.oresInInventory["oreDiddyum"] += 1;
+    }
+    else if (spin >= oresInGame.oresInGame.oreDropChance["oreOil"] && spin < oresInGame.oresInGame.oreDropChance["oreDiddyum"] && oresInGame.oresInGame.oreDropActive["oreOil"] === true) {
+        return playerInventory.playerInventory.oresInInventory["oreOil"] += 1;
+    }
+    else if (spin >= oresInGame.oresInGame.oreDropChance["oreObsidian"] && spin < oresInGame.oresInGame.oreDropChance["oreOil"] && oresInGame.oresInGame.oreDropActive["oreObsidian"] === true) {
+        return playerInventory.playerInventory.oresInInventory["oreObsidian"] += 1;
+    }
+    else if (spin >= oresInGame.oresInGame.oreDropChance["oreDiamond"] && spin < oresInGame.oresInGame.oreDropChance["oreObsidian"] && oresInGame.oresInGame.oreDropActive["oreDiamond"] === true) {
+        return playerInventory.playerInventory.oresInInventory["oreDiamond"] += 1;
+    }
+    else if (spin >= oresInGame.oresInGame.oreDropChance["oreGold"] && spin < oresInGame.oresInGame.oreDropChance["oreDiamond"] && oresInGame.oresInGame.oreDropActive["oreGold"] === true) {
+        return playerInventory.playerInventory.oresInInventory["oreGold"] += 1;
+    }
+    else if (spin >= oresInGame.oresInGame.oreDropChance["oreLithium"] && spin < oresInGame.oresInGame.oreDropChance["oreGold"] && oresInGame.oresInGame.oreDropActive["oreLithium"] === true) {
+        return playerInventory.playerInventory.oresInInventory["oreLithium"] += 1;
+    }
+    else if (spin >= oresInGame.oresInGame.oreDropChance["oreIron"] && spin < oresInGame.oresInGame.oreDropChance["oreLithium"] && oresInGame.oresInGame.oreDropActive["oreIron"] === true) {
+        return playerInventory.playerInventory.oresInInventory["oreIron"] += 1;
+    }
+    else {
+        return playerInventory.playerInventory.oresInInventory["oreCoal"] += 1;
+    }
+}
 // Backgrounds Start
 const backgrounds = {
     1: "./Textures/Backgrounds/dirt_background.png",

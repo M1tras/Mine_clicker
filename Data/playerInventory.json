@@ -2,12 +2,14 @@
     "type": "module",
     "playerInventory": {
         "oresInInventory": {
-            "oreStone": 0,
             "oreCoal": 0,
             "oreIron": 0,
             "oreLithium": 0,
             "oreGold": 0,
-            "oreObsidian": 0
+            "oreDiamond": 0,
+            "oreObsidian": 0,
+            "oreOil": 0,
+            "oreDiddyum": 0
         },
         "buffsInInventory": {
             "hastePotion": 0,
