@@ -15,6 +15,7 @@
                 <li>Home</li>
                 <li>About</li>
                 <li>Language</li>
+                <li><button onclick="window.resetGame()" class="reset-btn">Alvin button</button></li>
             </ul>
         </nav>
     </header>
@@ -43,6 +44,22 @@
             </div>
         </div>
     </section>
+
+    <template id="store-card-template">
+        <div class="store-card">
+            <img class="store-icon" alt="">
+            <div class="store-info">
+                <h3 class="store-item-name"></h3>
+                <p class="store-item-owned"></p>
+                <p class="store-item-pps click-bonus"></p>
+                <p class="store-item-pps production-info"></p>
+                <p class="store-item-pps drill-info"></p>
+                <p class="store-item-pps miner-hut-info"></p>
+                <button class="card-buy">Buy</button>
+            </div>
+        </div>
+    </template>
+
     <script type="module" src="index.js"></script>
 </body>
 </html>
