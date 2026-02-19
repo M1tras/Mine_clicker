@@ -1,44 +1,4 @@
-class StoreItem {
-    name = 'placeholder: Name';
-    price = 0;
-    priceMultiplier = 0;
-    perClick = 0;
-    icon = '';
-
-    constructor(name, price, priceMultiplier, perClick = 0, icon = '') {
-        this.name = name;
-        this.price = price;
-        this.priceMultiplier = priceMultiplier;
-        this.perClick = perClick;
-        this.icon = icon;
-    }
-
-    getName() {
-        return this.name;
-    }
-    getPrice() {
-        return this.price.toFixed(0);
-    }
-    getPriceMultiplier() {
-        return this.priceMultiplier;
-    }
-    getPerClick() {
-        return this.perClick;
-    }
-    getIcon() {
-        return this.icon;
-    }
-
-    itemBuyCheck(rocks) {
-        return rocks >= this.price;
-    }
-    itemBuy(rocks) {
-        return rocks - this.price;
-    }
-    addMultiplier() {
-        this.price *= this.priceMultiplier; return this.price;
-    }
-}
+import StoreItem from './storeItem.js';
 
 // Backgrounds Start
 const backgrounds = {
@@ -216,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const item = storeItems[selectedItemIndex];
         const owned = itemsOwned[item.name] || 0;
         const prod = item.name === 'miner' ? ` — Produces: ${owned} rock${owned === 1 ? '' : 's'}/sec` : '';
-        const drillInfo = item.name === 'drill' ? ` — All income ×${(1 + owned * DRILL_CLICK_MULT).toFixed(2)}` : '';
+        const drillInfo = item.name === 'drill' ? ` — All income ×${(1 + owned * DRILL_MULT).toFixed(2)}` : '';
 
         const storeItemNameEl = document.querySelector('.store-item-name');
         const storeItemOwnedEl = document.querySelector('.store-item-owned');

@@ -101,7 +101,8 @@ body {
 #store {
     padding-top: 1px;
     background: url('./Textures/Backgrounds/wood2_background.jpg') center;
-    height: 500px;
+    background-size: auto;
+    height: 2000px;
     width: 100%;
     color: white;
 }
