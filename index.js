@@ -2,36 +2,52 @@ import playerInventory from './Data/playerInventory.json' with { type: "json"};
 import oresInGame from './Data/ores.json' with { type: "json" };
 import StoreItem from './Components/storeItem.js';
 
-//Spins the ore chance and adds the chosen ore to the players inventory
-function spinForOre() {
-    let spin = Math.floor(Math.random() * 1000000);
+let playerInventoryData = JSON.parse(localStorage.getItem("playerInventory"));
 
-    if (spin >= oresInGame.oresInGame.oreDropChance["oreDiddyum"] && oresInGame.oresInGame.oreDropActive["oreDiddyum"] === true) {
-        return playerInventory.playerInventory.oresInInventory["oreDiddyum"] += 1;
-    }
-    else if (spin >= oresInGame.oresInGame.oreDropChance["oreOil"] && spin < oresInGame.oresInGame.oreDropChance["oreDiddyum"] && oresInGame.oresInGame.oreDropActive["oreOil"] === true) {
-        return playerInventory.playerInventory.oresInInventory["oreOil"] += 1;
-    }
-    else if (spin >= oresInGame.oresInGame.oreDropChance["oreObsidian"] && spin < oresInGame.oresInGame.oreDropChance["oreOil"] && oresInGame.oresInGame.oreDropActive["oreObsidian"] === true) {
-        return playerInventory.playerInventory.oresInInventory["oreObsidian"] += 1;
-    }
-    else if (spin >= oresInGame.oresInGame.oreDropChance["oreDiamond"] && spin < oresInGame.oresInGame.oreDropChance["oreObsidian"] && oresInGame.oresInGame.oreDropActive["oreDiamond"] === true) {
-        return playerInventory.playerInventory.oresInInventory["oreDiamond"] += 1;
-    }
-    else if (spin >= oresInGame.oresInGame.oreDropChance["oreGold"] && spin < oresInGame.oresInGame.oreDropChance["oreDiamond"] && oresInGame.oresInGame.oreDropActive["oreGold"] === true) {
-        return playerInventory.playerInventory.oresInInventory["oreGold"] += 1;
-    }
-    else if (spin >= oresInGame.oresInGame.oreDropChance["oreLithium"] && spin < oresInGame.oresInGame.oreDropChance["oreGold"] && oresInGame.oresInGame.oreDropActive["oreLithium"] === true) {
-        return playerInventory.playerInventory.oresInInventory["oreLithium"] += 1;
-    }
-    else if (spin >= oresInGame.oresInGame.oreDropChance["oreIron"] && spin < oresInGame.oresInGame.oreDropChance["oreLithium"] && oresInGame.oresInGame.oreDropActive["oreIron"] === true) {
-        return playerInventory.playerInventory.oresInInventory["oreIron"] += 1;
-    }
-    else {
-        return playerInventory.playerInventory.oresInInventory["oreCoal"] += 1;
-    }
+if (!playerInventoryData) {
+    playerInventoryData = playerInventory.playerInventory;
+    localStorage.setItem("playerInventory", JSON.stringify(playerInventory));
 }
-// Backgrounds Start
+
+window.playerInventory = playerInventoryData;
+
+//Spins the ore chance and adds the chosen ore to the players inventory
+
+    const ores = {
+        oreDiddyum: 1,
+        oreOil: 3,
+        oreObsidian: 5,
+        oreDiamond: 10,
+        oreGold: 20,
+        oreLithium: 50,
+        oreIron: 100,
+        oreCoal: 300
+    };
+
+function weightedRand(spec) {
+    const entries = Object.entries(spec);
+    const totalWeight = entries.reduce((sum, [_, weight]) => sum + weight, 0);
+    let r =Math.random() * totalWeight;
+    for (const [key, weight] of entries) {
+        r -= weight;
+        if (r <= 0){
+            return key;
+        } 
+    }
+};
+
+function spinForOre() {
+    const result = weightedRand(ores);
+    if (!playerInventory.playerInventory.oresInInventory[result]) {
+        playerInventory.playerInventory.oresInInventory[result] = 0;
+    }
+    playerInventory.playerInventory.oresInInventory[result] ++;
+
+    localStorage.setItem("playerInventory", JSON.stringify(playerInventory));
+    return result;
+}
+
+    // Backgrounds Start
 const backgrounds = {
     1: "./Textures/Backgrounds/dirt_background.png",
     2: "./Textures/Backgrounds/stone_background.png",
@@ -89,6 +105,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const gained = (1 + perClickBonus) * getGlobalMultiplier();
         rocks += gained;
+
+        const droppedOre = spinForOre();
+        console.log("you got:", droppedOre);
 
         saveGame();
         displayRocksAmt();
@@ -220,6 +239,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const savedItems = JSON.parse(localStorage.getItem('itemsOwned') || 'null');
             const savedPrices = JSON.parse(localStorage.getItem('itemPrices') || 'null');
             const savedBg = Number(localStorage.getItem('backgroundNumber'));
+
+            const savedInventory = JSON.parse(localStorage.getItem("playerInventory"));
+            if (savedInventory) {
+                playerInventoryData = savedInventory;
+            }
 
             if (savedItems && typeof savedItems === 'object') {
                 Object.keys(itemsOwned).forEach(k => { if (savedItems[k] !== undefined) itemsOwned[k] = savedItems[k]; });
