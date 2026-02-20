@@ -2,24 +2,14 @@
     "type": "module",
     "oresInGame": {
         "oreDropChance": {
-            "oreCoal": 0,
-            "oreIron": 0,
-            "oreLithium": 0,
-            "oreGold": 0,
-            "oreDiamond": 0,
-            "oreObsidian": 0,
-            "oreOil": 0,
-            "oreDiddyum": 0
-        },
-        "oreDropActive": {
-            "oreCoal": false,
-            "oreIron": false,
-            "oreLithium": false,
-            "oreGold": false,
-            "oreDiamond": false,
-            "oreObsidian": false,
-            "oreOil": false,
-            "oreDiddyum": false
+            "oreCoal": 300,
+            "oreIron": 100,
+            "oreLithium": 50,
+            "oreGold": 20,
+            "oreDiamond": 10,
+            "oreObsidian": 5,
+            "oreOil": 3,
+            "oreDiddyum": 1
         }
     }
 }

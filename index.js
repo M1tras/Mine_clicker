@@ -13,17 +13,6 @@ window.playerInventory = playerInventoryData;
 
 //Spins the ore chance and adds the chosen ore to the players inventory
 
-    const ores = {
-        oreDiddyum: 1,
-        oreOil: 3,
-        oreObsidian: 5,
-        oreDiamond: 10,
-        oreGold: 20,
-        oreLithium: 50,
-        oreIron: 100,
-        oreCoal: 300
-    };
-
 function weightedRand(spec) {
     const entries = Object.entries(spec);
     const totalWeight = entries.reduce((sum, [_, weight]) => sum + weight, 0);
@@ -37,7 +26,7 @@ function weightedRand(spec) {
 };
 
 function spinForOre() {
-    const result = weightedRand(ores);
+    const result = weightedRand(oresInGame.oresInGame.oreDropChance);
     if (!playerInventory.playerInventory.oresInInventory[result]) {
         playerInventory.playerInventory.oresInInventory[result] = 0;
     }
@@ -263,6 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
             try { localStorage.removeItem('pickaxePrice'); } catch (e) {}
         }
     }
+    
 
     function updateShopUI() {
         const item = storeItems[selectedItemIndex];
@@ -282,6 +272,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderStoreGrid();
     }
+    
+    function displayOres() {
+        const ores = playerInventory.playerInventory.oresInInventory;
+
+        Object.keys(ores).forEach(oreName => {
+            const el = document.querySelector(`.ore-${oreName}-display`);
+            if (el) {
+                el.textContent = ores[oreName];
+            }
+        });
+    }
+
+    console.log(playerInventory.playerInventory.oresInInventory[1])
 
     function applyBackground(doFade = true) {
         const mainEl = document.getElementById('main-page');
@@ -309,6 +312,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, { once: true });
     }
 
+    displayOres();
     loadGame();
     updateShopUI();
     applyBackground(false);
