@@ -4,9 +4,13 @@ import StoreItem from './Components/storeItem.js';
 
 let playerInventoryData = JSON.parse(localStorage.getItem("playerInventory"));
 
+if (playerInventoryData && playerInventoryData.playerInventory) {
+    playerInventoryData = playerInventoryData.playerInventory;
+}
+
 if (!playerInventoryData) {
     playerInventoryData = playerInventory.playerInventory;
-    localStorage.setItem("playerInventory", JSON.stringify(playerInventory));
+    localStorage.setItem("playerInventory", JSON.stringify(playerInventoryData));
 }
 
 window.playerInventory = playerInventoryData;
@@ -27,12 +31,11 @@ function weightedRand(spec) {
 
 function spinForOre() {
     const result = weightedRand(oresInGame.oresInGame.oreDropChance);
-    if (!playerInventory.playerInventory.oresInInventory[result]) {
-        playerInventory.playerInventory.oresInInventory[result] = 0;
+    if (!playerInventoryData.oresInInventory[result]) {
+        playerInventoryData.oresInInventory[result] = 0;
     }
-    playerInventory.playerInventory.oresInInventory[result] ++;
+    playerInventoryData.oresInInventory[result] ++;
 
-    localStorage.setItem("playerInventory", JSON.stringify(playerInventory));
     return result;
 }
 
@@ -73,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     storeItems.forEach(i => itemsOwned[i.name] = 0);
 
     // Rock clicker
-    let count = document.getElementById("rock");
+    let count = document.getElementById("button");
     let counting = document.getElementById("counting");
     let rocks = Number(localStorage.getItem("rock")) || 0;
 
@@ -96,10 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
         rocks += gained;
 
         const droppedOre = spinForOre();
-        console.log("you got:", droppedOre);
 
         saveGame();
         displayRocksAmt();
+        displayOres();
     }
 
     function displayRocksAmt() {
@@ -221,6 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem('itemsOwned', JSON.stringify(itemsOwned));
         localStorage.setItem('backgroundNumber', String(backgroundNumber));
         localStorage.setItem('itemPrices', JSON.stringify(Object.fromEntries(storeItems.map(i => [i.name, i.price]))));
+        localStorage.setItem("playerInventory", JSON.stringify(playerInventoryData));
     }
 
     function loadGame() {
@@ -231,7 +235,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const savedInventory = JSON.parse(localStorage.getItem("playerInventory"));
             if (savedInventory) {
-                playerInventoryData = savedInventory;
+                if (savedInventory.playerInventory) {
+                    playerInventoryData = savedInventory.playerInventory;
+                } else {
+                    playerInventoryData = savedInventory;
+                }
             }
 
             if (savedItems && typeof savedItems === 'object') {
@@ -274,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     function displayOres() {
-        const ores = playerInventory.playerInventory.oresInInventory;
+        const ores = playerInventoryData.oresInInventory;
 
         Object.keys(ores).forEach(oreName => {
             const el = document.querySelector(`.ore-${oreName}-display`);
@@ -283,8 +291,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-
-    console.log(playerInventory.playerInventory.oresInInventory[1])
 
     function applyBackground(doFade = true) {
         const mainEl = document.getElementById('main-page');
