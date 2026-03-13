@@ -67,7 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
         new StoreItem("pickaxe", 25, 1.1, 1, "./Textures/Icons/pickaxe.png"),
         new StoreItem("miner", 500, 1.1, 0, "./Textures/Icons/worker.png"),
         new StoreItem("drill", 10000, 2, 0, "./Textures/Icons/drill.png"),
-        new StoreItem("miner hut", 2000, 3, 0, "./Textures/Icons/hut.png")
+        new StoreItem("miner hut", 2000, 3, 0, "./Textures/Icons/hut.png"),
+        new StoreItem("machinery", 150000, 3, 0, ".Textures/Icons/digger.png")
     ];
 
     const DRILL_MULT = 0.5;
@@ -98,7 +99,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const gained = (1 + perClickBonus) * getGlobalMultiplier();
         rocks += gained;
 
-        const droppedOre = spinForOre();
+        const canDropOre = spinForOre();
+
+        if(canDropOre === true) {
+            spinForOre()
+        }
+
 
         saveGame();
         displayRocksAmt();
@@ -120,6 +126,19 @@ document.addEventListener("DOMContentLoaded", () => {
             const cardFragment = createStoreCard(item, index);
             storeGridEl.appendChild(cardFragment);
         });
+    }
+
+    function spinForOreDrop() {
+        let getOre = false;
+        const randomNum = (Math.random()* 10) + 1;
+
+        if (randomNum === 10) {
+            getOre = true;
+        }
+        else {
+            return false
+        }
+        return getOre
     }
 
     function createStoreCard(item, index) {
