@@ -1,0 +1,7 @@
+----- HOW TO EXICUTE THE SQL FILE -----
+
+1. Log into your Mariadb.
+
+2. Exicute the following commands: "CREATE DATABASE MineClicker" and "USE MineClicker".
+
+3. Then finally use the following example to exicute the .sql file: "SOURCE /full/path/to/your/script.sql;".
