@@ -44,7 +44,8 @@ const backgrounds = {
     1: "./Textures/Backgrounds/dirt_background.png",
     2: "./Textures/Backgrounds/stone_background.png",
     3: "./Textures/Backgrounds/rock_background.png",
-    4: "./Textures/Backgrounds/lava_background.png"
+    4: "./Textures/Backgrounds/lava_background.png",
+    5: "./Textures/Backgrounds/hell_background.png"
 };
 
 let backgroundNumber = 1;
@@ -58,6 +59,13 @@ function resetGameHandler() {
     }
 }
 
+function canGoToSpace() {
+    if (backgroundNumber === 5) {
+        return true;
+    }
+    return false;
+}
+
 window.resetGame = resetGameHandler;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -68,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         new StoreItem("miner", 500, 1.1, 0, "./Textures/Icons/worker.png"),
         new StoreItem("drill", 10000, 2, 0, "./Textures/Icons/drill.png"),
         new StoreItem("miner hut", 2000, 3, 0, "./Textures/Icons/hut.png"),
-        new StoreItem("machinery", 150000, 3, 0, ".Textures/Icons/digger.png")
+        new StoreItem("machinery", 150000, 3, 0, "./Textures/Icons/digger.png")
     ];
 
     const DRILL_MULT = 0.5;
