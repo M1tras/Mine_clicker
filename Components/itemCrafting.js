@@ -5,6 +5,7 @@ class ItemRecipe {
     itemName = '';
     oresRequired = {};
     itemPrice = 0;
+    itemDescription = '';
 
     constructor(itemName, oresRequired) {
         this.itemName = itemName;
